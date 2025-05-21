@@ -2,165 +2,175 @@
 
 namespace App\Livewire\Employee;
 
-use App\Models\Employee;
-use DateInterval;
-use DateTime;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\On;
+use App\Models\Attendance;
+use App\Models\User;
 use Livewire\Component;
+use Illuminate\Support\Facades\Log;
 
 class AttendanceClocker extends Component
 {
-
-    public $type; // Enum [check-in, check-out, overtime-check-in, overtime-check-out]
-    private $lateThreshold = 15 * 60; // seconds
-
+    public $type = 'check-in';
+    public $scannerConnected = false;
+    public $scanning = false;
+    public $statusMessage = null;
+    public $statusSuccess = false;
+    public $lastAction = null;
+    
+    protected $listeners = [
+        'scanner-connected' => 'handleScannerConnected',
+        'scanning-started' => 'handleScanningStarted',
+        'scanning-stopped' => 'handleScanningStopped',
+        'card-scanned' => 'handleCardScanned',
+        'scanner-error' => 'handleScannerError',
+        'clock-fire' => 'clockInOut',
+        'clearStatusMessage' => 'clearStatusMessage'
+    ];
+    
     public function mount()
     {
-        $this->type = 'Select... ⬇️⬇️';
+        // Initialize lastAction to null to prevent undefined variable error
+        $this->lastAction = null;
+        
+        // Set the default type based on last action
+        $this->setDefaultType();
     }
-
-    public function now()
-    {
-        // TODO: Make timezone congigurable from company settings
-        return date_timezone_set(now(), timezone_open('Asia/Jakarta'));
-    }
-
-    public function setTz($time)
-    {
-        return date_timezone_set($time, timezone_open('Asia/Jakarta'));
-    }
-
-    #[On("clock-fire")]
-    public function clockInOut($id)
-    {
-        error_log($this->type . ' for employee with ID: ' . $id);
-        if (str_contains($this->type, 'Select')) {
-            $this->type = 'Please Select a type below ⬇️⬇️';
-            error_log('No type selected');
-            return;
-        }
-
-        $employee = Employee::where('card_id', $id)->first();
-        if (!$employee) {
-            error_log('Employee NOT FOUND with ID: ' . $id);
-            $this->type = 'CARD ID NOT FOUND';
-            return;
-        }
-
-        // if 'check-in' (case sensitive)
-        if (str_contains($this->type, 'check-in')) {
-            // check if employee already checked in today
-            $attendance = $employee->attendanceRecords()
-                ->where('attendance_date', $this->now()->format('Y-m-d'))
-                ->whereNotNull('check_in')
-                ->first();
-            if ($attendance) {
-                error_log('Attendance already exists for employee with ID: ' . $id);
-                error_log('Attendance ID: ' . $attendance->id);
-                error_log('Attendance DATE: ' . $attendance->attendance_date);
-                error_log('DATE NOW: ' . $this->now()->format('Y-m-d'));
-
-                $this->type = 'ATTENDANCE CHECK-IN ALREADY EXISTS';
-                return;
-            }
-
-            //  check if employee late or early
-            $delta = strtotime($this->now()->format('H:i:s')) - strtotime($employee->position->shift_clock_in_time);
-            error_log('Delta: ' . ($delta > 0 ? '+' : '-') . date('H_i_s', abs($delta)));
-
-            // check if employee is late
-            $notes = null;
-
-            if ($delta > $this->lateThreshold) {
-                // employee is late
-                $notes = 'late:' . date('H_i_s', abs($delta));
-                error_log('Employee is LATE: ' . $notes);
-            } elseif ($delta < 0) {
-                // employee is early
-                $notes = 'early:' . date('H_i_s', abs($delta));
-                error_log('Employee is EARLY: ' . $notes);
-            }
-
-            // check if employee is overtime
-            if (str_contains($this->type, 'overtime')) {
-                $notes = ($notes) ? $notes . ',overtime' : 'overtime';
-                error_log('Employee is OVERTIME: ' . $notes);
-            }
-
-            // NOTE: Whoops baru tahu bisa gitu wok, lol whatevs, codesmell udah like shit
-            $attendance = $employee->attendanceRecords()->create([
-                'check_in' => $this->now(),
-                'check_out' => null,
-                'attendance_date' => $this->now()->format('Y-m-d'),
-                'notes' => $notes, // notes, comma delimited list of flags, such as [overtime, late-check-in, late-check-out, ...]
-            ]);
-        }
-
-        // if 'check-out' (case sensitive)
-        if ($this->type == 'check-out') {
-            $attendance = $employee->attendanceRecords()
-                ->where('attendance_date', $this->now()->format('Y-m-d'))
-                ->whereNull('check_out')
-                ->first();
-
-            // if not found, check for yesterday's attendance
-            // NOTE: This is a workaround for the case when the employee forgets to check out / has a night-till-day shift
-            if (!$attendance) {
-                $attendance = $employee->attendanceRecords()
-                    ->where('attendance_date', $this->now()->sub(DateInterval::createFromDateString('1 day'))->format('Y-m-d'))
-                    ->whereNull('check_out')
-                    ->first();
-            }
-
-            if ($attendance) {
-                $attendance->update([
-                    'check_out' => $this->now(),
-                ]);
-            } else {
-                error_log('Attendance NOT FOUND for employee with ID: ' . $id);
-                $this->type = 'ATTENDANCE NOT FOUND';
-                return;
-            }
-        }
-
-        // if 'overtime-check-out' (case sensitive) same as check-out
-        // if 'check-out' (case sensitive)
-        if ($this->type == 'overtime-check-out') {
-            $attendance = $employee->attendanceRecords()
-                ->where('attendance_date', now()->format('Y-m-d'))
-                ->where('notes', 'overtime')
-                ->whereNull('check_out')
-                ->first();
-
-            // if not found, check for yesterday's attendance
-            // NOTE: This is a workaround for the case when the employee forgets to check out / has a night shift
-            if (!$attendance) {
-                $attendance = $employee->attendanceRecords()
-                    ->where('attendance_date', now()->sub(DateInterval::createFromDateString('1 day'))->format('Y-m-d'))
-                    ->whereNull('check_out')
-                    ->first();
-            }
-
-            if ($attendance) {
-                $attendance->update([
-                    'check_out' => now(),
-                ]);
-            } else {
-                error_log('Attendance NOT FOUND for employee with ID: ' . $id);
-                $this->type = 'OVERTIME ATTENDANCE NOT FOUND';
-                return;
-            }
-        }
-
-        error_log('Employee FOUND: ' . $employee->fullname);
-        $this->type = 'Select... ⬇️⬇️';
-    }
-
-    #[Layout('components.layouts.app.header')]
     public function render()
     {
         return view('livewire.employee.attendance-clocker');
+    }
+    
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+    
+    public function setDefaultType()
+    {
+        // Find the most recent attendance record for setting appropriate default type
+        $lastAttendance = Attendance::latest()->first();
+        
+        if ($lastAttendance) {
+            $this->lastAction = [
+                'type' => $lastAttendance->type,
+                'time' => $lastAttendance->created_at->format('M j, Y g:i A')
+            ];
+            
+            // If the last action was a check-in, default to check-out
+            if (str_contains($lastAttendance->type, 'check-in')) {
+                $this->type = str_contains($lastAttendance->type, 'overtime') 
+                    ? 'overtime-check-out' 
+                    : 'check-out';
+            }
+        }
+    }
+    
+    public function handleScannerConnected()
+    {
+        $this->scannerConnected = true;
+        $this->statusMessage = 'Scanner connected successfully';
+        $this->statusSuccess = true;
+        
+        // Clear the message after 3 seconds
+        $this->dispatch('clearStatusMessage');
+    }
+    
+    public function handleScanningStarted()
+    {
+        $this->scanning = true;
+    }
+    
+    public function handleScanningStopped()
+    {
+        $this->scanning = false;
+        $this->scannerConnected = false;
+    }
+    
+    /**
+     * Handle the clockInOut event from the original code
+     * This maintains compatibility with the original implementation
+     */
+    public function clockInOut($uid)
+    {
+        $this->handleCardScanned(['uid' => $uid]);
+    }
+    
+    public function handleCardScanned($data)
+    {
+        $uid = $data['uid'];
+        
+        try {
+            // Find the user by their card UID
+            $user = User::where('card_uid', $uid)->first();
+            
+            if (!$user) {
+                $this->showErrorMessage("Unknown card. Please contact an administrator.");
+                return;
+            }
+            
+            // Record the attendance
+            $attendance = new Attendance();
+            $attendance->user_id = $user->id;
+            $attendance->type = $this->type;
+            $attendance->save();
+            
+            // Update the last action
+            $this->lastAction = [
+                'type' => $this->type,
+                'time' => now()->format('M j, Y g:i A')
+            ];
+            
+            // Show success message
+            $this->showSuccessMessage("{$user->name} - {$this->type} successful at " . now()->format('g:i A'));
+            
+            // Toggle the type (check-in -> check-out or vice versa)
+            $this->toggleType();
+            
+        } catch (\Exception $e) {
+            Log::error('Error processing attendance: ' . $e->getMessage());
+            $this->showErrorMessage('An error occurred. Please try again.');
+        }
+    }
+    
+    public function handleScannerError($data)
+    {
+        $this->showErrorMessage('Scanner error: ' . $data['message']);
+        $this->scanning = false;
+    }
+    
+    public function clearStatusMessage()
+    {
+        $this->statusMessage = null;
+    }
+    
+    protected function showSuccessMessage($message)
+    {
+        $this->statusMessage = $message;
+        $this->statusSuccess = true;
+        
+        // Clear the message after 5 seconds using JavaScript setTimeout
+        $this->dispatch('setTimeout', ['clearStatusMessage', 5000]);
+    }
+    
+    protected function showErrorMessage($message)
+    {
+        $this->statusMessage = $message;
+        $this->statusSuccess = false;
+        
+        // Clear the message after 5 seconds using JavaScript setTimeout
+        $this->dispatch('setTimeout', ['clearStatusMessage', 5000]);
+    }
+    
+    protected function toggleType()
+    {
+        // Switch between check-in and check-out (maintaining overtime status)
+        if ($this->type === 'check-in') {
+            $this->type = 'check-out';
+        } elseif ($this->type === 'check-out') {
+            $this->type = 'check-in';
+        } elseif ($this->type === 'overtime-check-in') {
+            $this->type = 'overtime-check-out';
+        } elseif ($this->type === 'overtime-check-out') {
+            $this->type = 'overtime-check-in';
+        }
     }
 }

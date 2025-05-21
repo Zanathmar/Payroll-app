@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
-            $table->date('attendance_date');
-            $table->time('check_in')->nullable();
-            $table->time('check_out')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('type'); // check-in, check-out, overtime-check-in, overtime-check-out
             $table->text('notes')->nullable();
             $table->timestamps();
+        });
+        
+        // Add card_uid column to users table
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('card_uid')->nullable()->unique()->after('email');
         });
     }
 
@@ -28,5 +31,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('attendances');
+        
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('card_uid');
+        });
     }
 };

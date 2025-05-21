@@ -1,106 +1,201 @@
-<div class="flex flex-col justify-center items-center h-screen">
-    <div class="p-8 rounded-lg outline-[0.5px] shadow-md flex space-x-8">
-
-        <div class="flex flex-col space-y-4">
-            <div class="p-4 rounded-md outline-[0.5px] shadow-md w-64">
-                <h1 id="clock" class="text-4xl font-semibold mb-2"></h1>
-                <p class="text-lg" style="color:{{ str_contains($type, 'in') ? 'lime' : 'red' }}">{{ strtoupper($type) }}</p>
+ <!-- Right Panel - Actions and Card Scanner -->
+ <div class="w-full flex justify-center">
+        <div class="w-full md:w-96 flex flex-col gap-6">
+            <!-- Action Buttons -->
+            <div class="dark:bg-zinc-900 rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-4">Select Action</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <button 
+                        wire:click="setType('check-in')" 
+                        class="flex flex-col items-center justify-center p-4 rounded-lg transition-all duration-200 {{ $type === 'check-in' ? 'bg-emerald-100 dark:bg-emerald-900 ring-2 ring-emerald-400' : 'bg-gray-50 dark:bg-gray-800 hover:bg-emerald-50 dark:hover:bg-emerald-800' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 {{ $type === 'check-in' ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-300' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                        </svg>
+                        <span class="mt-2 text-sm font-medium {{ $type === 'check-in' ? 'text-emerald-700 dark:text-emerald-300' : 'text-gray-600 dark:text-gray-300' }}">Check In</span>
+                    </button>
+                    
+                    <button 
+                        wire:click="setType('check-out')" 
+                        class="flex flex-col items-center justify-center p-4 rounded-lg transition-all duration-200 {{ $type === 'check-out' ? 'bg-rose-100 dark:bg-rose-900 ring-2 ring-rose-400' : 'bg-gray-50 dark:bg-gray-800 hover:bg-rose-50 dark:hover:bg-rose-800' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 {{ $type === 'check-out' ? 'text-rose-600 dark:text-rose-400' : 'text-gray-500 dark:text-gray-300' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span class="mt-2 text-sm font-medium {{ $type === 'check-out' ? 'text-rose-700 dark:text-rose-300' : 'text-gray-600 dark:text-gray-300' }}">Check Out</span>
+                    </button>
+                    
+                    <button 
+                        wire:click="setType('overtime-check-in')" 
+                        class="flex flex-col items-center justify-center p-4 rounded-lg transition-all duration-200 {{ $type === 'overtime-check-in' ? 'bg-emerald-100 dark:bg-emerald-900 ring-2 ring-emerald-400' : 'bg-gray-50 dark:bg-gray-800 hover:bg-emerald-50 dark:hover:bg-emerald-800' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 {{ $type === 'overtime-check-in' ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-300' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="mt-2 text-sm font-medium {{ $type === 'overtime-check-in' ? 'text-emerald-700 dark:text-emerald-300' : 'text-gray-800 dark:text-gray-300' }}">OT Check In</span>
+                    </button>
+                    
+                    <button 
+                        wire:click="setType('overtime-check-out')" 
+                        class="flex flex-col items-center justify-center p-4 rounded-lg transition-all duration-200 {{ $type === 'overtime-check-out' ? 'bg-rose-100 dark:bg-rose-900 ring-2 ring-rose-400' : 'bg-gray-50 dark:bg-gray-800 hover:bg-rose-50 dark:hover:bg-rose-800' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 {{ $type === 'overtime-check-out' ? 'text-rose-600 dark:text-rose-400' : 'text-gray-500 dark:text-gray-300' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="mt-2 text-sm font-medium {{ $type === 'overtime-check-out' ? 'text-rose-700 dark:text-rose-300' : 'text-gray-800 dark:text-gray-300' }}">OT Check Out</span>
+                    </button>
+                </div>
             </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <button x-on:click="$wire.set('type','check-in')" class="bg-green-200 hover:bg-green-300 text-green-700 font-semibold py-2 px-4 rounded">
-                    Check In
-                </button>
-                <button x-on:click="$wire.set('type','check-out')" class="bg-red-200 hover:bg-red-300 text-red-700 font-semibold py-5 px-4 rounded">
-                    Check Out
-                </button>
-                <button x-on:click="$wire.set('type','overtime-check-in')" class="bg-green-300 hover:bg-green-400 text-green-700 font-semibold py-2 px-4 rounded">
-                    Check In </br> <i class="font-regular">Overtime</i>
-                </button>
-                <button x-on:click="$wire.set('type','overtime-check-out')" class="bg-red-300 hover:bg-red-400 text-red-700 font-semibold py-2 px-4 rounded">
-                    Check Out </br> <i class="font-regular">Overtime</i>
-                </button>
+            
+            <!-- Card Scanner Section -->
+            <div id="scanner-panel" class="bg-white dark:bg-zinc-900 rounded-xl shadow-lg p-6 flex flex-col items-center">
+                <h3 class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-4">Card Scanner</h3>
+                
+                <div class="w-full relative mb-4">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300 dark:border-gray-500"></div>
+                    </div>
+                    <div class="relative flex justify-center">
+                        <span class="bg-white dark:bg-gray-700 px-2 text-sm text-gray-500 dark:text-gray-400">
+                            {{ $scannerConnected ? 'Scanner Ready' : 'Scanner Not Connected' }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col items-center">
+                    <div class="mb-4 p-4 rounded-full {{ $scannerConnected ? 'bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400' : 'bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9a3 3 0 11-6 0 3 3 0 016 0zm6 8a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    
+                    <p class="text-center text-sm mb-3 text-gray-600 dark:text-gray-300">
+                        {{ $scannerConnected ? 'Tap your card on the scanner to register attendance' : 'Click the button below to connect the scanner' }}
+                    </p>
+                    
+                    @if(!$scannerConnected)
+                    <button id="connect-scanner" class="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        Connect Scanner
+                    </button>
+                    @endif
+                    
+                    <div id="scan-animation" class="{{ $scanning ? 'block' : 'hidden' }} mt-4">
+                        <div class="flex justify-center space-x-2">
+                            <div class="w-2 h-2 bg-blue-600 dark:bg-blue-400 rounded-full animate-bounce"></div>
+                            <div class="w-2 h-2 bg-blue-600 dark:bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            <div class="w-2 h-2 bg-blue-600 dark:bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Status Message -->
+                <div class="mt-6 w-full">
+                    <div id="status-message" class="{{ $statusMessage ? 'flex' : 'hidden' }} items-center p-4 {{ $statusSuccess ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' : 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' }} rounded-lg text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $statusSuccess ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12' }}" />
+                        </svg>
+                        <span>{{ $statusMessage }}</span>
+                    </div>
+                </div>
             </div>
-            {{-- <flux:button x-on:click="$wire.clockInOut('EBC3C630')">DUMMY ATTENDANCE</flux:button> --}}
         </div>
-
-        <div id="thing" class="p-8 rounded-md flex flex-col shadow-md outline-[0.5px] items-center justify-center w-64">
-            <p class="text-center text-lg font-semibold mb-4">Tap your card on the scanner below</p>
-            <div class="text-blue-500 text-2xl animate-bounce">
-                <svg class="w-8 h-8 inline-block" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"><path d="M11 21.883l-6.235-7.527-.765.644 7.521 9 7.479-9-.764-.645-6.236 7.529v-21.884h-1v21.883z"/></svg>
-
-                <svg class="w-8 h-8 inline-block" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"><path d="M11 21.883l-6.235-7.527-.765.644 7.521 9 7.479-9-.764-.645-6.236 7.529v-21.884h-1v21.883z"/></svg>
-
-                <svg class="w-8 h-8 inline-block" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"><path d="M11 21.883l-6.235-7.527-.765.644 7.521 9 7.479-9-.764-.645-6.236 7.529v-21.884h-1v21.883z"/></svg>
-            </div>
-        </div>
-
     </div>
+</div>
 
-    <script>
-        document.querySelector('#thing').addEventListener('click', async () => {
-            // Prompt user to select any serial port.
-            const port = await navigator.serial.requestPort();
 
-            // Wait for the serial port to open.
-            //await port.close();
-            document.querySelector('#important').innerText = "✅✅ READY, Click the button to start ✅✅";
-            await port.open({ baudRate: 9600 });
-            await start(port);
-            await port.close();
-        });
+<script>
+    // Clock functionality
+    function startTime() {
+        const today = new Date();
+        let h = today.getHours();
+        let m = today.getMinutes();
+        let s = today.getSeconds();
+        m = checkTime(m);
+        s = checkTime(s);
+        document.getElementById('clock').innerHTML = h + ":" + m + ":" + s;
+        setTimeout(startTime, 1000);
+    }
 
-        async function start(port) {
-            const textDecoder = new TextDecoderStream();
-            const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
-            const reader = textDecoder.readable.getReader();
+    function checkTime(i) {
+        if (i < 10) {i = "0" + i};
+        return i;
+    }
 
-            // Start the clock            
+    // Start the clock when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        startTime();
+    });
 
-            // Listen to data coming from the serial device.
+    // Serial port functionality
+    document.addEventListener('livewire:initialized', () => {
+        const connectButton = document.getElementById('connect-scanner');
+        
+        if (connectButton) {
+            connectButton.addEventListener('click', async () => {
+                try {
+                    // Prompt user to select any serial port
+                    const port = await navigator.serial.requestPort();
+                    
+                    // Notify Livewire that scanner is connected
+                    Livewire.dispatch('scanner-connected');
+                    
+                    // Open the port
+                    await port.open({ baudRate: 9600 });
+                    
+                    // Start reading from the port
+                    await startReading(port);
+                    
+                } catch (error) {
+                    console.error('Error connecting to serial port:', error);
+                    Livewire.dispatch('scanner-error', { message: error.message });
+                }
+            });
+        }
+    });
+
+    async function startReading(port) {
+        const textDecoder = new TextDecoderStream();
+        const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+        const reader = textDecoder.readable.getReader();
+        
+        Livewire.dispatch('scanning-started');
+        
+        try {
             while (true) {
                 const { value, done } = await reader.read();
+                
                 if (done) {
-                    // Allow the serial port to be closed later.
                     reader.releaseLock();
                     break;
                 }
                 
-                // value is a string.
-                console.log(value);
+                console.log('Received data:', value);
                 
                 try {
-                    let uid = (/UID: (.*)/.exec(value))[1];
-                    //document.getElementsByTagName("h1")[0].innerText = uid;
-                    console.log(uid);
-                    Livewire.dispatch('clock-fire', [uid,]);
-                    document.getElementById('clock').innerHTML = "SUCCESS";
+                    // Extract UID from the response
+                    const uidMatch = /UID: (.*)/.exec(value);
+                    if (uidMatch && uidMatch[1]) {
+                        const uid = uidMatch[1].trim();
+                        console.log('Extracted UID:', uid);
+                        
+                        // Send the UID to Livewire component
+                        Livewire.dispatch('card-scanned', { uid: uid });
+                    }
                 } catch (error) {
-                    //document.getElementsByTagName("h1")[0].innerText = value;
-                    console.log("An koont error occurred:", error.message);
+                    console.error('Error processing card data:', error);
+                    Livewire.dispatch('scanner-error', { message: 'Error reading card: ' + error.message });
                 }
             }
+        } catch (error) {
+            console.error('Error reading from serial port:', error);
+            Livewire.dispatch('scanner-error', { message: 'Connection error: ' + error.message });
+        } finally {
+            Livewire.dispatch('scanning-stopped');
+            
+            try {
+                await port.close();
+            } catch (error) {
+                console.error('Error closing port:', error);
+            }
         }
-
-        function startTime() {
-                const today = new Date();
-                let h = today.getHours();
-                let m = today.getMinutes();
-                let s = today.getSeconds();
-                m = checkTime(m);
-                s = checkTime(s);
-                document.getElementById('clock').innerHTML =  h + ":" + m + ":" + s;
-                setTimeout(startTime, 1000); // Call startTime() every 1 second
-            }
-
-            function checkTime(i) {
-                if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-                return i;
-            }
-
-        startTime();
-        console.log("Serial port API is supported in this browser.");
-    </script>
-
-    <p class="my-4" id="important">⚠️⚠️ NOT READY, Call an Admin to rectify this ⚠️⚠️</p>
-</div>
+    }
+</script>

@@ -14,28 +14,44 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-                    <flux:navlist.item icon="user-group" :href="route('dashboard.manage-employees')" :current="request()->routeIs('dashboard.manage-employees')" wire:navigate>
-                        {{ __('Employees') }}</flux:navlist.item>
-                    <flux:navlist.item icon="circle-stack" :href="route('dashboard.payrolls')" :current="request()->routeIs('dashboard.payrolls')" wire:navigate>
-                        {{ __('Payrolls') }}</flux:navlist.item>
                     <flux:navlist.item icon="calendar-date-range" :href="route('dashboard.time-attendance')" :current="request()->routeIs('dashboard.time-attendance')" wire:navigate>
-                        {{ __('Time & Attendance') }}</flux:navlist.item>
-                    <flux:navlist.item icon="inbox-arrow-down" :href="route('dashboard.leave-requests')" :current="request()->routeIs('dashboard.config.leave-requests')" wire:navigate>
-                        {{ __('Leave Requests') }}</flux:navlist.item>
-                </flux:navlist.group>
-                <flux:navlist.group :heading="__('Configuration')" class="grid">
-                    {{-- TODO: Implement Routes --}}
-                    <flux:navlist.item icon="building-office" :href="route('dashboard.config.company-settings')" :current="request()->routeIs('dashboard.config.company-settings')" wire:navigate>
-                        {{ __('Company Settings') }}</flux:navlist.item>
-                    <flux:navlist.item icon="building-office-2" :href="route('dashboard.config.departments-and-positions')" :current="request()->routeIs('dashboard.config.departments-and-positions')" wire:navigate>
-                        {{ __('Departments & Position') }}</flux:navlist.item>
-                    <flux:navlist.item icon="user" :href="route('dashboard.config.manage-users')" :current="request()->routeIs('dashboard.config.manage-users')" wire:navigate>
-                        {{ __('Users') }}</flux:navlist.item>
-                    <flux:navlist.item icon="chart-pie" :href="route('dashboard.config.tax-settings')" :current="request()->routeIs('none')" wire:navigate>
-                        {{ __('Tax Settings') }}</flux:navlist.item>
-                    <flux:navlist.item icon="banknotes" :href="route('dashboard.config.salary-components')" :current="request()->routeIs('dashboard.config.salary-components')" wire:navigate>
-                        {{ __('Salary Components') }}</flux:navlist.item>
-                </flux:navlist.group>
+                        {{ __('Attendance') }}</flux:navlist.item>
+                        <flux:navlist.item icon="inbox-arrow-down" :href="route('dashboard.leave-requests')" :current="request()->routeIs('dashboard.config.leave-requests')" wire:navigate>
+                            {{ __('Leave Requests') }}</flux:navlist.item>
+                        </flux:navlist.group>
+                        
+                        
+                       @if (Auth::user()->is_admin == true)
+    <flux:navlist.group :heading="__('Configuration')" class="grid">
+        <flux:navlist.item icon="building-office" :href="route('dashboard.config.company-settings')" :current="request()->routeIs('dashboard.config.company-settings')" wire:navigate>
+            {{ __('Company Settings') }}
+        </flux:navlist.item>
+
+        <flux:navlist.item icon="user-group" :href="route('dashboard.manage-employees')" :current="request()->routeIs('dashboard.manage-employees')" wire:navigate>
+            {{ __('Employees') }}
+        </flux:navlist.item>
+
+        <flux:navlist.item icon="circle-stack" :href="route('dashboard.payrolls')" :current="request()->routeIs('dashboard.payrolls')" wire:navigate>
+            {{ __('Payrolls') }}
+        </flux:navlist.item>
+
+        <flux:navlist.item icon="building-office-2" :href="route('dashboard.config.departments-and-positions')" :current="request()->routeIs('dashboard.config.departments-and-positions')" wire:navigate>
+            {{ __('Departments & Position') }}
+        </flux:navlist.item>
+
+        <flux:navlist.item icon="user" :href="route('dashboard.config.manage-users')" :current="request()->routeIs('dashboard.config.manage-users')" wire:navigate>
+            {{ __('Users') }}
+        </flux:navlist.item>
+
+        <flux:navlist.item icon="chart-pie" :href="route('dashboard.config.tax-settings')" :current="request()->routeIs('none')" wire:navigate>
+            {{ __('Tax Settings') }}
+        </flux:navlist.item>
+
+        <flux:navlist.item icon="banknotes" :href="route('dashboard.config.salary-components')" :current="request()->routeIs('dashboard.config.salary-components')" wire:navigate>
+            {{ __('Salary Components') }}
+        </flux:navlist.item>
+    </flux:navlist.group>
+@endif
             </flux:navlist>
 
             <flux:spacer />
