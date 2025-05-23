@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use Exception;
 use Flux\Flux;
 use Livewire\Component;
 
@@ -45,9 +46,12 @@ class EmployeeCreationWizard extends Component
 
     public function createEmployee()
     {
+        try {
+
+        
         $this->validate([
             'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
             'fullname' => 'required|string|max:255',
             'phone_number' => 'required|string|max:255',
             'address' => 'required|string|max:255',
@@ -58,7 +62,7 @@ class EmployeeCreationWizard extends Component
             'payroll_id' => 'required|exists:payrolls,id',
             'hire_date' => 'required|date',
             'position_id' => 'required|exists:positions,id',
-            'department_id' => 'required|exists:departments,id',
+            // 'department_id' => 'required|exists:departments,id',
             'salary_amount' => 'required|numeric',
             'pay_frequency' => 'required|string|max:255',
             // 'effective_date' => 'required|date',
@@ -99,6 +103,9 @@ class EmployeeCreationWizard extends Component
         // redirect to the employee list page
 
         return redirect()->route('dashboard.manage-employees');
+    } catch (Exception $e) {
+        dd($e);
+    }
     }
 
     public function updated($propertyName)

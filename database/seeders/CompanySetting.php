@@ -15,9 +15,9 @@ class CompanySetting extends Seeder
     {
         //
         ModelsCompanySetting::factory()->create([
-            'name' => 'PT Rumput Abdullah Jaya Abadi',
-            'description' => 'Abdullah Yasir\'s very successful feed business',
-            'address' => 'Balls st, Bollocks ave, 1298',
+            'name' => 'PT Mulia Jaya',
+            'description' => 'Berdiri Sejak 1945',
+            'address' => 'Ngawi ',
             'phone' => '+62 23028398289392',
         ]);
     }

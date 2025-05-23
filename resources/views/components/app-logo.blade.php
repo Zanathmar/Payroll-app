@@ -1,9 +1,12 @@
-<div class="flex aspect-square size-8 items-center justify-center rounded-md bg-accent-content text-accent-foreground">
-    <x-app-logo-icon class="size-5 fill-current text-white dark:text-black" />
-</div>
-<div class="ms-1 grid flex-1 text-start text-xl gap-1">
-    <span class="mb-0.5 truncate leading-none font-semibold"></span>
-    {{-- TODO: INFO TAKE FROM DB --}}
-    <span class="mb-0.5 leading-none"><livewire:components.company-name/></span>
-    <p class="text-sm">EST 1945</p>
+<div class="w-full flex items-center gap-3 p-4 rounded-xl bg-accent-content shadow-md border border-accent">
+    <div class="flex size-12 items-center justify-center rounded-lg bg-primary/90 text-white dark:bg-primary-foreground dark:text-black transition-all">
+        <x-app-logo-icon class="size-6 fill-current" />
+    </div>
+    <div class="flex flex-col text-start text-base leading-tight">
+        <span class="text-lg font-bold truncate text-primary dark:text-zinc-900">Payroll</span>
+        <span class="text-sm text-muted-foreground dark:text-zinc-800">
+            <livewire:components.company-name />
+        </span>
+        <p class="text-xs text-muted-foreground dark:text-gray-400">Est. 1945</p>
+    </div>
 </div>

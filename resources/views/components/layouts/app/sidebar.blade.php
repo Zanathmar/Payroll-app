@@ -7,7 +7,7 @@
         <flux:sidebar sticky stashable class="border-r border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+            <a href="{{ route('dashboard.home') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
                 <x-app-logo />
             </a>
 
@@ -16,18 +16,25 @@
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                     <flux:navlist.item icon="calendar-date-range" :href="route('dashboard.time-attendance')" :current="request()->routeIs('dashboard.time-attendance')" wire:navigate>
                         {{ __('Attendance') }}</flux:navlist.item>
-                        <flux:navlist.item icon="inbox-arrow-down" :href="route('dashboard.leave-requests')" :current="request()->routeIs('dashboard.config.leave-requests')" wire:navigate>
-                            {{ __('Leave Requests') }}</flux:navlist.item>
-                        </flux:navlist.group>
-                        
-                        
-                       @if (Auth::user()->is_admin == true)
+                   <flux:navlist.item 
+    icon="inbox-arrow-down" 
+    :href="route('employee.new-leave-request')" 
+    :current="request()->routeIs('employee.new-leave-request')" 
+    wire:navigate>
+    {{ __('Leave Request Form') }}
+</flux:navlist.item>
+                    </flux:navlist.group>
+                    
+                    
+                    @if (Auth::user()->is_admin == true)
+                    <flux:navlist.item icon="inbox-arrow-down" :href="route('dashboard.leave-requests')" :current="request()->routeIs('dashboard.config.leave-requests')" wire:navigate>
+                        {{ __('Leave Requests') }}</flux:navlist.item>
     <flux:navlist.group :heading="__('Configuration')" class="grid">
         <flux:navlist.item icon="building-office" :href="route('dashboard.config.company-settings')" :current="request()->routeIs('dashboard.config.company-settings')" wire:navigate>
             {{ __('Company Settings') }}
         </flux:navlist.item>
 
-        <flux:navlist.item icon="user-group" :href="route('dashboard.manage-employees')" :current="request()->routeIs('dashboard.manage-employees')" wire:navigate>
+        <flux:navlist.item icon="user-group" :href="route('dashboard.manage-employees')" :current="request()->routeIs(['dashboard.manage-employees','dashboard.employee-create-wizard'])" wire:navigate>
             {{ __('Employees') }}
         </flux:navlist.item>
 

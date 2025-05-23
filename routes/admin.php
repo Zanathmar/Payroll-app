@@ -15,13 +15,17 @@ use App\Livewire\Admin\ManageUsers;
 use App\Livewire\Admin\Payrolls;
 use App\Livewire\Admin\SalaryComponents;
 use App\Livewire\Admin\TaxSettings;
+use App\Livewire\Admin\Dashboard;
 use Illuminate\Support\Facades\Route;
 
+
 Route::middleware(['auth', 'admin'])->name('dashboard')->group(function () {
+    Route::get('dashboard', Dashboard::class)->name('.home');
     Route::get('dashboard/company-settings', CompanySetting::class)->name('.config.company-settings');
     Route::get('dashboard/manage-departments-positions', DepartmentsAndPositions::class)->name('.config.departments-and-positions');
     Route::get('dashboard/manage-departments-positions/department/{id}', DepartmentDetail::class)->name('.config.department-detail');
     Route::get('dashboard/manage-departments-positions/department/{id}/position/{id2}', PositionDetail::class)->name('.config.position-detail');
+    
 
     Route::get('dashboard/employee_detail/{id}', EmployeeDetail::class)->name('.config.employee-detail');
 

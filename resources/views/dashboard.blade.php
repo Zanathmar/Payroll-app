@@ -1,18 +1,20 @@
 <x-layouts.app :title="__('Dashboard')">
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-            </div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-            </div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-            </div>
+    <div class="grid gap-4 md:grid-cols-4">
+        <div class="rounded-xl border p-4 dark:border-neutral-700 bg-white dark:bg-neutral-800">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Total Employees</p>
+            <p class="text-2xl font-bold">{{ $totalEmployees }}</p>
         </div>
-        <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-            <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+        <div class="rounded-xl border p-4 dark:border-neutral-700 bg-white dark:bg-neutral-800">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Total Departments</p>
+            <p class="text-2xl font-bold">{{ $totalDepartments }}</p>
+        </div>
+        <div class="rounded-xl border p-4 dark:border-neutral-700 bg-white dark:bg-neutral-800">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Total Payrolls</p>
+            <p class="text-2xl font-bold">{{ $totalPayrolls }}</p>
+        </div>
+        <div class="rounded-xl border p-4 dark:border-neutral-700 bg-white dark:bg-neutral-800">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Total Salaries Paid</p>
+            <p class="text-2xl font-bold">Rp {{ number_format($totalSalaries, 0, ',', '.') }}</p>
         </div>
     </div>
 </x-layouts.app>

@@ -52,7 +52,7 @@ class LeaveRequestForm extends Component
         $this->reset(['employee_id', 'leave_type', 'start_date', 'end_date', 'reason']);
     }
 
-    #[Layout('components.layouts.app.header')]
+   
     public function render()
     {
         return view('livewire.leave-request-form', [
