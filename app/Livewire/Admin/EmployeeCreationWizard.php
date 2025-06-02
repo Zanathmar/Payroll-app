@@ -104,7 +104,7 @@ class EmployeeCreationWizard extends Component
 
         return redirect()->route('dashboard.manage-employees');
     } catch (Exception $e) {
-        dd($e);
+        
     }
     }
 

@@ -45,7 +45,7 @@
                     @foreach ($positions as $position)
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-all duration-200 animate-enter">
                         <td
-                            style="cursor:pointer" onclick="document.location.href='{{ route('dashboard.config.position-detail', [$department->id, $position->id]) }}'"
+                            style="cursor:pointer" onclick="document.location.href='{{ route('dashboard.position-detail', [$department->id, $position->id]) }}'"
                             class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-800 dark:text-slate-100 transition-colors duration-300">
                             <span class="inline-block transition-transform duration-300 hover:translate-x-1 hover:underline">
                                 {{ $position->name }}

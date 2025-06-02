@@ -36,7 +36,7 @@
                     @foreach ($departments as $department)
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-all duration-200 animate-enter">
                         <td
-                            style="cursor:pointer" onclick="document.location.href='{{ route('dashboard.config.department-detail', $department->id) }}'"
+                            style="cursor:pointer" onclick="document.location.href='{{ route('dashboard.department-detail', $department->id) }}'"
                             class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-800 dark:text-slate-100 transition-colors duration-300">
                             <span class="inline-block transition-all duration-300 hover:translate-x-1 ease-in-out hover:underline">
                                 {{ $department->name }}

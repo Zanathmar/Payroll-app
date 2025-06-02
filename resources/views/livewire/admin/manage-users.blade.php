@@ -40,7 +40,7 @@
                     @foreach ($users as $user)
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-all duration-200 animate-enter">
                         <td
-                            style="cursor:pointer" onclick="document.location.href='{{ ($user->employee) ? route('dashboard.config.position-detail', [$user->employee->position->department->id, $user->employee->position->id]) : route('dashboard') }}'"
+                            style="cursor:pointer" onclick="document.location.href='{{ ($user->employee) ? route('dashboard.position-detail', [$user->employee->position->department->id, $user->employee->position->id]) : route('dashboard') }}'"
                             class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-800 dark:text-slate-100 transition-colors duration-300">
                             <span class="inline-block transition-all duration-300 hover:translate-x-1 ease-in-out hover:underline">
                                 {{ $user->name }}
@@ -61,7 +61,7 @@
                             </span>
                         </td>
                         <td
-                        style="cursor:pointer" onclick="document.location.href='{{ ($user->employee) ? route('dashboard.config.position-detail', [$user->employee->position->department->id, $user->employee->position->id]) : route('dashboard.config.manage-users') }}'"
+                        style="cursor:pointer" onclick="document.location.href='{{ ($user->employee) ? route('dashboard.position-detail', [$user->employee->position->department->id, $user->employee->position->id]) : route('dashboard.manage-users') }}'"
                         class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300 transition-colors duration-300">
                             <span class="inline-block transition-transform duration-300 hover:translate-x-1">
                                 {{-- Calculate from length of positions array --}}

@@ -7,7 +7,7 @@
         <flux:sidebar sticky stashable class="border-r border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            <a href="{{ route('dashboard.home') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+            <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
                 <x-app-logo />
             </a>
 
@@ -27,10 +27,10 @@
                     
                     
                     @if (Auth::user()->is_admin == true)
-                    <flux:navlist.item icon="inbox-arrow-down" :href="route('dashboard.leave-requests')" :current="request()->routeIs('dashboard.config.leave-requests')" wire:navigate>
+                    <flux:navlist.item icon="inbox-arrow-down" :href="route('dashboard.leave-requests')" :current="request()->routeIs('dashboard.leave-requests')" wire:navigate>
                         {{ __('Leave Requests') }}</flux:navlist.item>
     <flux:navlist.group :heading="__('Configuration')" class="grid">
-        <flux:navlist.item icon="building-office" :href="route('dashboard.config.company-settings')" :current="request()->routeIs('dashboard.config.company-settings')" wire:navigate>
+        <flux:navlist.item icon="building-office" :href="route('dashboard.company-settings')" :current="request()->routeIs('dashboard.company-settings')" wire:navigate>
             {{ __('Company Settings') }}
         </flux:navlist.item>
 
@@ -42,19 +42,19 @@
             {{ __('Payrolls') }}
         </flux:navlist.item>
 
-        <flux:navlist.item icon="building-office-2" :href="route('dashboard.config.departments-and-positions')" :current="request()->routeIs('dashboard.config.departments-and-positions')" wire:navigate>
+        <flux:navlist.item icon="building-office-2" :href="route('dashboard.departments-positions')" :current="request()->routeIs('dashboard.departments-and-positions')" wire:navigate>
             {{ __('Departments & Position') }}
         </flux:navlist.item>
 
-        <flux:navlist.item icon="user" :href="route('dashboard.config.manage-users')" :current="request()->routeIs('dashboard.config.manage-users')" wire:navigate>
+        <flux:navlist.item icon="user" :href="route('dashboard.manage-users')" :current="request()->routeIs('dashboard.manage-users')" wire:navigate>
             {{ __('Users') }}
         </flux:navlist.item>
 
-        <flux:navlist.item icon="chart-pie" :href="route('dashboard.config.tax-settings')" :current="request()->routeIs('none')" wire:navigate>
+        <flux:navlist.item icon="chart-pie" :href="route('dashboard.tax-settings')" :current="request()->routeIs('none')" wire:navigate>
             {{ __('Tax Settings') }}
         </flux:navlist.item>
 
-        <flux:navlist.item icon="banknotes" :href="route('dashboard.config.salary-components')" :current="request()->routeIs('dashboard.config.salary-components')" wire:navigate>
+        <flux:navlist.item icon="banknotes" :href="route('dashboard.salary-components')" :current="request()->routeIs('dashboard.salary-components')" wire:navigate>
             {{ __('Salary Components') }}
         </flux:navlist.item>
     </flux:navlist.group>
@@ -121,7 +121,7 @@
 
         <!-- Mobile User Menu -->
         <flux:header class="lg:hidden">
-            <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+            <flux:sidebar.toggle class="lg:hidden" icon="bars-3" inset="left" />
 
             <flux:spacer />
 
